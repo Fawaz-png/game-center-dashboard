@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
  
 
 return new class extends Migration
@@ -31,6 +32,11 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Drop any lingering FK constraints that reference roles (e.g., users.role_id)
+        if (Schema::hasTable('users')) {
+            DB::statement('ALTER TABLE `users` DROP FOREIGN KEY `users_role_id_foreign`');
+        }
+
         Schema::dropIfExists('roles');
     }
 };
